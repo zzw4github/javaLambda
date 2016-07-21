@@ -1,6 +1,7 @@
 package me.zzw.lambda.person;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 
 public class Person {
 
@@ -58,6 +59,10 @@ public class Person {
 
     public void printPerson() {
        System.out.println(toString());
+    }
+
+    public static int compareByAge(Person a, Person b) {
+        return a.birthday.compareTo(b.birthday);
     }
 
     @Override

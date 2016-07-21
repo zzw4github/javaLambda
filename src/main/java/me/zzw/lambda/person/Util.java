@@ -1,5 +1,7 @@
 package me.zzw.lambda.person;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -102,5 +104,17 @@ public class Util {
                                 && p.getAge() <= 25)
                 .map(p -> p.getEmailAddress())
                 .forEach(email -> System.out.println(email));
+    }
+
+    public static Person[] toArray(List<Person> roster) {
+        return  roster.toArray(new Person[roster.size()]);
+    }
+
+    public static void sort(Person[] roster, Comparator<Person>  personAgeComparator) {
+         Arrays.sort(roster, personAgeComparator);
+    }
+
+    public  static <T> void sort(T[] a, Comparator<? super T> c){
+        Arrays.sort(a, c);
     }
 }

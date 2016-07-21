@@ -1,5 +1,6 @@
 package me.zzw.lambda.test.person;
 
+import me.zzw.lambda.methodReferences.PersonAgeComparator;
 import me.zzw.lambda.person.CheckPerson;
 import me.zzw.lambda.person.Person;
 import me.zzw.lambda.person.Util;
@@ -8,6 +9,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,12 +17,15 @@ import java.util.List;
  */
 public class PersonTest {
     List<Person> roster = new ArrayList<>();
+    Person[] rosterArray ;
     @Before
     public void setUp() throws Exception {
         roster.add(new Person("person1", LocalDate.of(1988, 7, 23), Person.Sex.MALE, "111@sohu.com"));
         roster.add(new Person("person1", LocalDate.of(1999, 7, 23), Person.Sex.MALE, "111@sohu.com"));
         roster.add(new Person("person1", LocalDate.of(1995, 7, 23), Person.Sex.MALE, "111@sohu.com"));
         roster.add(new Person("person1", LocalDate.of(2000, 7, 23), Person.Sex.MALE, "111@sohu.com"));
+
+        rosterArray =  roster.toArray(new Person[roster.size()]);
 
     }
 
@@ -98,5 +103,46 @@ public class PersonTest {
     @Test
     public void processPersonsWithAggregateOPeratrionsTest(){
         Util.processPersons(roster);
+    }
+
+    @Test
+    public void sort(){
+        Util.sort(Util.toArray(roster), new PersonAgeComparator());
+    }
+
+    /*
+     the interface Comparator is a functional interface. Therefore,
+     you could use a lambda expression instead of defining and then creating a new instance of a class that implements Comparator:
+     */
+    @Test
+    public void sort2(){
+        Arrays.sort(rosterArray,
+                (Person a, Person b) -> {
+                    return a.getBirthday().compareTo(b.getBirthday());
+                }
+        );
+    }
+
+    /**
+     *     this method to compare the birth dates of two Person instances already exists as Person.compareByAge.
+     *     You can invoke this method instead in the body of the lambda expression:
+     */
+    @Test
+    public void sort3(){
+        Arrays.sort(rosterArray,
+                (a, b) -> Person.compareByAge(a, b)
+        );
+    }
+
+    /*this lambda expression invokes an existing method, you can use a method reference instead of a lambda expression
+    The method reference Person::compareByAge is semantically the same as the lambda expression (a, b) -> Person.compareByAge(a, b).
+    Each has the following characteristics:
+        Its formal parameter list is copied from Comparator<Person>.compare, which is (Person, Person).
+        Its body calls the method Person.compareByAge.
+    method reference Person::compareByAge is a reference to a static method.
+     */
+    @Test
+    public void sort4(){
+        Arrays.sort(rosterArray, Person::compareByAge);
     }
 }
